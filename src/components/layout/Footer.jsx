@@ -76,21 +76,26 @@ export default function Footer() {
           </a>
         </div>
 
-        {/* Bottom bar */}
-        <div className="border-t border-gray-200 mt-8 pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-          <div className="flex flex-wrap items-center gap-2 text-[13px] text-gray-500">
-            <span>© 2026 Coinbase</span>
-            <span>•</span>
-            <Link to="#" className="hover:text-gray-900 transition-colors">Privacy</Link>
-            <span>•</span>
-            <Link to="#" className="hover:text-gray-900 transition-colors">Terms & Conditions</Link>
+    {/* Bottom bar */}
+        <div className="border-t border-gray-200 mt-8 pt-6 flex flex-col gap-4">
+          <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700 text-center">
+            ⚠️ <strong>Demo Project:</strong> This is a student project built for educational purposes only. It is not affiliated with, endorsed by, or connected to Coinbase Inc. Do not enter real personal information, passwords, or financial data.
           </div>
-          <div className="flex items-center gap-1.5 text-[13px] text-gray-500">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-            </svg>
-            <span>Global • English</span>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 text-[13px] text-gray-500">
+              <span>© 2026 Crypto App | Student Project</span>
+              <span>•</span>
+              <Link to="#" className="hover:text-gray-900 transition-colors">Privacy</Link>
+              <span>•</span>
+              <Link to="#" className="hover:text-gray-900 transition-colors">Terms & Conditions</Link>
+            </div>
+            <div className="flex items-center gap-1.5 text-[13px] text-gray-500">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+              </svg>
+              <span>Global • English</span>
+            </div>
           </div>
         </div>
       </div>

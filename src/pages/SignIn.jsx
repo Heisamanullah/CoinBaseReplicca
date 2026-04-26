@@ -1,24 +1,37 @@
-import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import CoinbaseLogo from '../components/common/CoinbaseLogo'
-import Button from '../components/common/Button'
-import Input from '../components/common/Input'
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import CoinbaseLogo from '../components/common/CoinbaseLogo';
+import Button from '../components/common/Button';
+import Input from '../components/common/Input';
+import { useAuth } from '../context/AuthContext';
 
 export default function SignIn() {
-  const [form, setForm] = useState({ email: '', password: '' })
-  const navigate = useNavigate()
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [error,   setError]   = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
-  const set = field => e => setForm(prev => ({ ...prev, [field]: e.target.value }))
+  const set = (field) => (e) => setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
-  const handleSubmit = e => {
-    e.preventDefault()
-    navigate('/')
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      await login(form.email, form.password);
+      navigate('/');
+    } catch (err) {
+      setError(err.message || 'Login failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-[calc(100vh-60px)] flex items-center justify-center bg-gray-50 px-4 py-12">
       <div className="w-full max-w-[420px]">
-        {/* Logo */}
         <div className="flex justify-center mb-8">
           <CoinbaseLogo size={48} />
         </div>
@@ -26,6 +39,12 @@ export default function SignIn() {
         <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
           <h1 className="text-2xl font-black text-gray-900 mb-1 text-center">Sign in to Coinbase</h1>
           <p className="text-sm text-gray-500 text-center mb-7">Welcome back</p>
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 mb-4">
+              {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -39,17 +58,20 @@ export default function SignIn() {
               </div>
               <Input type="password" placeholder="••••••••" value={form.password} onChange={set('password')} required />
             </div>
-            <Button type="submit" variant="primary" size="lg" className="w-full mt-2">Sign in</Button>
+           <Button type="submit" variant="primary" size="lg" className="w-full mt-2" disabled={loading}>
+              {loading ? 'Signing in…' : 'Sign in'}
+            </Button>
+            <p className="text-center text-xs text-gray-400 mt-2">
+              🔒 Demo app — do not use your real password
+            </p>
           </form>
 
-          {/* Divider */}
           <div className="flex items-center gap-3 my-5">
             <div className="flex-1 h-px bg-gray-200" />
             <span className="text-xs text-gray-400 font-medium">OR</span>
             <div className="flex-1 h-px bg-gray-200" />
           </div>
 
-          {/* SSO */}
           <button className="w-full flex items-center justify-center gap-3 py-3 rounded-full border-2 border-gray-200 hover:bg-gray-50 transition-colors text-sm font-semibold text-gray-700">
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -67,5 +89,5 @@ export default function SignIn() {
         </div>
       </div>
     </div>
-  )
+  );
 }

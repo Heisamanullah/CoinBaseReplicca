@@ -1,31 +1,45 @@
-import { useState } from 'react'
-import { useNavigate, useLocation, Link } from 'react-router-dom'
-import CoinbaseLogo from '../components/common/CoinbaseLogo'
-import Button from '../components/common/Button'
-import Input from '../components/common/Input'
+import { useState } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import CoinbaseLogo from '../components/common/CoinbaseLogo';
+import Button from '../components/common/Button';
+import Input from '../components/common/Input';
+import { useAuth } from '../context/AuthContext';
 
 export default function SignUp() {
-  const location = useLocation()
-  const navigate  = useNavigate()
+  const location = useLocation();
+  const navigate  = useNavigate();
+  const { register } = useAuth();
 
   const [form, setForm] = useState({
     firstName: '',
     lastName:  '',
     email:     location.state?.email || '',
     password:  '',
-  })
+  });
+  const [error,   setError]   = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const set = field => e => setForm(prev => ({ ...prev, [field]: e.target.value }))
+  const set = (field) => (e) => setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
-  const handleSubmit = e => {
-    e.preventDefault()
-    navigate('/')
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const fullName = `${form.firstName} ${form.lastName}`.trim();
+      await register(fullName, form.email, form.password);
+      navigate('/');
+    } catch (err) {
+      setError(err.message || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-[calc(100vh-60px)] flex items-center justify-center bg-gray-50 px-4 py-12">
       <div className="w-full max-w-[440px]">
-        {/* Logo */}
         <div className="flex justify-center mb-8">
           <CoinbaseLogo size={48} />
         </div>
@@ -34,8 +48,13 @@ export default function SignUp() {
           <h1 className="text-2xl font-black text-gray-900 mb-1 text-center">Create your account</h1>
           <p className="text-sm text-gray-500 text-center mb-7">Start trading crypto in minutes</p>
 
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 mb-4">
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Name row */}
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">First name</label>
@@ -58,7 +77,6 @@ export default function SignUp() {
               <p className="text-xs text-gray-400 mt-1.5 ml-2">Must be at least 8 characters</p>
             </div>
 
-            {/* Terms */}
             <p className="text-xs text-gray-500 leading-relaxed">
               By creating an account, you agree to our{' '}
               <Link to="#" className="text-[#0052FF] font-semibold hover:underline">User Agreement</Link>{' '}
@@ -66,17 +84,20 @@ export default function SignUp() {
               <Link to="#" className="text-[#0052FF] font-semibold hover:underline">Privacy Policy</Link>.
             </p>
 
-            <Button type="submit" variant="primary" size="lg" className="w-full">Create account</Button>
+            <Button type="submit" variant="primary" size="lg" className="w-full" disabled={loading}>
+              {loading ? 'Creating account…' : 'Create account'}
+            </Button>
+            <p className="text-center text-xs text-gray-400 mt-2">
+              🔒 Demo app — do not use your real password
+            </p>
           </form>
 
-          {/* Divider */}
           <div className="flex items-center gap-3 my-5">
             <div className="flex-1 h-px bg-gray-200" />
             <span className="text-xs text-gray-400 font-medium">OR</span>
             <div className="flex-1 h-px bg-gray-200" />
           </div>
 
-          {/* Google SSO */}
           <button className="w-full flex items-center justify-center gap-3 py-3 rounded-full border-2 border-gray-200 hover:bg-gray-50 transition-colors text-sm font-semibold text-gray-700">
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -94,5 +115,5 @@ export default function SignUp() {
         </div>
       </div>
     </div>
-  )
+  );
 }
