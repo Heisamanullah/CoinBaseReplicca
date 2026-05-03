@@ -29,7 +29,7 @@ export default function SignUp() {
     try {
       const fullName = `${form.firstName} ${form.lastName}`.trim();
       await register(fullName, form.email, form.password);
-      navigate('/');
+      navigate('/explore');
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');
     } finally {
