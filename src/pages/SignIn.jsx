@@ -21,7 +21,7 @@ export default function SignIn() {
 
     try {
       await login(form.email, form.password);
-      navigate('/');
+      navigate('/explore');
     } catch (err) {
       setError(err.message || 'Login failed. Please try again.');
     } finally {
